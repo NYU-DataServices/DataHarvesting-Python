@@ -1,7 +1,21 @@
-### Data Extraction and Management Using Python
+### Research Applications in Python
 
-#### Description
-Learn how to extract and manage data from text and HTML files, interface with the web, and perform search functions on large datasets using introductory Python techniques. No prior knowledge of Python necessary.
+**Nicholas Wolf and Vicky Steeves, NYU Data Services**
 
-#### Topics 
-Intake of .txt and .html files into Python; urllib; Regex; web scraping
+Vicky's ORCID: 0000-0003-4298-168X | Nick's ORCID: 0000-0001-5512-6151
+
+This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
+
+## Overview
+
+This session is an intermediate-to-advanced level class that offers some ideas for how to approach the following common data wrangling needs in research:
+
+ - Obtain data and load it into a suitable data "container" for analysis, often via a web interface, especially an API
+ - Parse the data retrieved via an API and turn it into a useful object for manipulation and analysis
+ - Perform some basic summary counts of records in a dataset and work up a quick visualization
+
+## Setup
+
+**Project Environment**
+
+Download the notebook available at goo.gl/DZuPim and open it in Jupyter Notebook.
