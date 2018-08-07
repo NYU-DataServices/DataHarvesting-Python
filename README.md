@@ -1,4 +1,4 @@
-### Research Applications in Python
+### Python for Harvesting Data on the Web
 
 **Nicholas Wolf and Vicky Steeves, NYU Data Services**
 
