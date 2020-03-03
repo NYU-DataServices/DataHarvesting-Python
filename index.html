@@ -11782,13 +11782,15 @@ div#notebook {
 <ul>
 <li>Obtain data and load it into a suitable data "container" for analysis, often via a web interface, especially an API</li>
 <li>Parse the data retrieved via an API and turn it into a useful object for manipulation and analysis</li>
-<li>Perform some basic summary counts of records in a dataset and work up a quick visualization</li>
+<li>Perform some basic data integrity checks of the downloaded data in anticipation of preparing it for analysis</li>
 </ul>
 <h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2><p><strong>Project Environment</strong></p>
-<p>Download the notebook available at <a href="https://goo.gl/Pnm7Dx">https://goo.gl/Pnm7Dx</a> and open it in Jupyter Notebook. Alternatively, you can clonse the course materials using</p>
+<p>Download the notebook available at <a href="https://goo.gl/Pnm7Dx">https://goo.gl/Pnm7Dx</a> and open it in Jupyter Notebook. Alternatively, you can clone the course materials using</p>
 <p><code>git clone https://github.com/NYU-DataServices/DataHarvesting-Python.git</code></p>
 <p><strong>State of New York Socrata API Account</strong></p>
 <p>To work with this session's data, you'll need to create an API account with the state of New York's data service. Visit <a href="https://data.ny.gov">data.ny.gov</a> and click on signup to create an account.</p>
+<p><strong>Google Sheets API</strong></p>
+<p>To demonstrate how to work with oauth API interfaces, we'll do some sandbox work using Google Sheets API as a proof of concept. For this, you'll need a Google Drive account such as the one associated with your NYU email address.</p>
 
 </div>
 </div>
@@ -11806,13 +11808,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="n">mv_data_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://data.ny.gov/resource/cm56-widp.json&#39;</span><span class="p">)</span>
+<span class="n">mv_data_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://data.ny.gov/resource/xe9x-a24f.json&#39;</span><span class="p">)</span>
 
 <span class="n">mv_list_recs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">mv_data_json</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 
@@ -11833,7 +11835,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;action_prior_to_accident&#39;: &#39;Going Straight Ahead&#39;, &#39;case_vehicle_id&#39;: &#39;13364180&#39;, &#39;contributing_factor_1&#39;: &#39;HUMAN&#39;, &#39;contributing_factor_1_description&#39;: &#39;Fell Asleep&#39;, &#39;contributing_factor_2&#39;: &#39;HUMAN&#39;, &#39;contributing_factor_2_description&#39;: &#39;Unknown&#39;, &#39;direction_of_travel&#39;: &#39;East&#39;, &#39;engine_cylinders&#39;: &#39;4&#39;, &#39;event_type&#39;: &#39;Not Applicable&#39;, &#39;fuel_type&#39;: &#39;Gas&#39;, &#39;number_of_occupants&#39;: &#39;2&#39;, &#39;partial_vin&#39;: &#39;KNMAT2MV1FP544486&#39;, &#39;registration_class&#39;: &#39;PASSENGER OR SUBURBAN&#39;, &#39;state_of_registration&#39;: &#39;NY&#39;, &#39;type_axles_of_truck_or_bus&#39;: &#39;Not Entered&#39;, &#39;vehicle_body_type&#39;: &#39;SUBURBAN&#39;, &#39;vehicle_make&#39;: &#39;NISSA&#39;, &#39;vehicle_year&#39;: &#39;2015&#39;, &#39;year&#39;: &#39;2016&#39;}
+<pre>{&#39;year&#39;: &#39;2016&#39;, &#39;case_vehicle_id&#39;: &#39;13364180&#39;, &#39;vehicle_body_type&#39;: &#39;SUBURBAN&#39;, &#39;registration_class&#39;: &#39;PASSENGER OR SUBURBAN&#39;, &#39;action_prior_to_accident&#39;: &#39;Going Straight Ahead&#39;, &#39;type_axles_of_truck_or_bus&#39;: &#39;Not Entered&#39;, &#39;direction_of_travel&#39;: &#39;East&#39;, &#39;fuel_type&#39;: &#39;Gas&#39;, &#39;vehicle_year&#39;: &#39;2015&#39;, &#39;state_of_registration&#39;: &#39;NY&#39;, &#39;number_of_occupants&#39;: &#39;2&#39;, &#39;engine_cylinders&#39;: &#39;4&#39;, &#39;vehicle_make&#39;: &#39;NISSA&#39;, &#39;contributing_factor_1&#39;: &#39;HUMAN&#39;, &#39;contributing_factor_1_description&#39;: &#39;Fell Asleep&#39;, &#39;contributing_factor_2&#39;: &#39;HUMAN&#39;, &#39;contributing_factor_2_description&#39;: &#39;Unknown&#39;, &#39;event_type&#39;: &#39;Not Applicable&#39;, &#39;partial_vin&#39;: &#39;KNMAT2MV1FP544486&#39;}
 </pre>
 </div>
 </div>
@@ -11854,15 +11856,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
 
 <span class="n">mv_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mv_list_recs</span><span class="p">)</span>
 
-<span class="n">display</span><span class="p">(</span><span class="n">mv_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">mv_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11875,11 +11876,11 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
-<div class="output_html rendered_html output_subarea ">
+<div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -12151,45 +12152,12 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mv_df</span><span class="o">.</span><span class="n">number_of_occupants</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mv_df</span><span class="o">.</span><span class="n">number_of_occupants</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class &#39;pandas.core.series.Series&#39;&gt;
-&lt;class &#39;list&#39;&gt;
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong> Bonus: wget direct from web</strong></p>
-<p>If you have wget installed on your system, you can use the command line utility wget directly in a Notebook cell.</p>
+<p>If you have wget installed on your system, you can use the command line utility wget directly in a Notebook cell. This cell could then be run at the start of your notebook to always retrieve the latest version of a dataset.</p>
 <p>To install wget, visit <a href="http://www.gnu.org/software/wget/">http://www.gnu.org/software/wget/</a></p>
 
 </div>
@@ -12197,10 +12165,52 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget https://data.ny.gov/resource/xe9x-a24f.json
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>--2020-03-03 09:34:06--  https://data.ny.gov/resource/xe9x-a24f.json
+Resolving data.ny.gov (data.ny.gov)... 52.206.140.199, 52.206.68.26, 52.206.140.205
+Connecting to data.ny.gov (data.ny.gov)|52.206.140.199|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/json]
+Saving to: ‘xe9x-a24f.json’
+
+xe9x-a24f.json          [ &lt;=&gt;                ] 606.07K  --.-KB/s    in 0.09s   
+
+2020-03-03 09:34:08 (6.51 MB/s) - ‘xe9x-a24f.json’ saved [620616]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget https://www.nhc.noaa.gov/data/hurdat/hurdat2-nepac-1949-2017-050418.txt
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wget_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;xe9x-a24f.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="n">wget_json</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12213,59 +12223,33 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2019-03-06 13:38:23--  https://www.nhc.noaa.gov/data/hurdat/hurdat2-nepac-1949-2017-050418.txt
-Resolving www.nhc.noaa.gov (www.nhc.noaa.gov)... 2600:9000:201a:e400::bd73:4880:93a1, 2600:9000:201a:b000::bd73:4880:93a1, 2600:9000:201a:be00::bd73:4880:93a1, ...
-Connecting to www.nhc.noaa.gov (www.nhc.noaa.gov)|2600:9000:201a:e400::bd73:4880:93a1|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 3396117 (3.2M) [text/plain]
-Saving to: ‘hurdat2-nepac-1949-2017-050418.txt.1’
 
-hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s    
 
-2019-03-06 13:38:24 (5.26 MB/s) - ‘hurdat2-nepac-1949-2017-050418.txt.1’ saved [3396117/3396117]
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;hurdat2-nepac-1949-2017-050418.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;year&#39;: &#39;2016&#39;,
+ &#39;case_vehicle_id&#39;: &#39;13364180&#39;,
+ &#39;vehicle_body_type&#39;: &#39;SUBURBAN&#39;,
+ &#39;registration_class&#39;: &#39;PASSENGER OR SUBURBAN&#39;,
+ &#39;action_prior_to_accident&#39;: &#39;Going Straight Ahead&#39;,
+ &#39;type_axles_of_truck_or_bus&#39;: &#39;Not Entered&#39;,
+ &#39;direction_of_travel&#39;: &#39;East&#39;,
+ &#39;fuel_type&#39;: &#39;Gas&#39;,
+ &#39;vehicle_year&#39;: &#39;2015&#39;,
+ &#39;state_of_registration&#39;: &#39;NY&#39;,
+ &#39;number_of_occupants&#39;: &#39;2&#39;,
+ &#39;engine_cylinders&#39;: &#39;4&#39;,
+ &#39;vehicle_make&#39;: &#39;NISSA&#39;,
+ &#39;contributing_factor_1&#39;: &#39;HUMAN&#39;,
+ &#39;contributing_factor_1_description&#39;: &#39;Fell Asleep&#39;,
+ &#39;contributing_factor_2&#39;: &#39;HUMAN&#39;,
+ &#39;contributing_factor_2_description&#39;: &#39;Unknown&#39;,
+ &#39;event_type&#39;: &#39;Not Applicable&#39;,
+ &#39;partial_vin&#39;: &#39;KNMAT2MV1FP544486&#39;}</pre>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>EP011949,            UNNAMED,      7,
-
-19490611, 0000,  , TS, 20.2N, 106.3W,  45, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999, -999,
-
-</pre>
-</div>
 </div>
 
 </div>
@@ -12276,75 +12260,21 @@ hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Web-API-Requests">Web API Requests<a class="anchor-link" href="#Web-API-Requests">&#182;</a></h1><p>For more robust ways of serving up data, i.e. by APIs, we generally need to register an "app," i.e. an application that will be accessing the data, receive at the very least a token (and often a client secret as well) to enable tracked downloads of data, ensure proper access limits, etc.</p>
-<p>It is very helpful if an API comes with a pre-built library to interface with that server so that you don't have to handle signing requests in HTTP, managing tokens, etc. For example, here is the typical workflow often required for authenticated API interfacing:</p>
+<h1 id="2.-Simple-Web-API-Requests">2. Simple Web API Requests<a class="anchor-link" href="#2.-Simple-Web-API-Requests">&#182;</a></h1><p>For more robust ways of serving up data, i.e. by APIs, we generally need to register an "app," i.e. an application that will be accessing the data, receive at the very least a token (and often a client secret as well) to enable tracked downloads of data, ensure proper access limits, etc.</p>
+<p>We can think of these access points as involving one of two levels of authentication: a simple authentication involving signed requests (where a long term token is passed along with the request but no secondary per-request or limited-time token is needed), and a more complex, two or three step authentication process.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="n">Request</span>
-
-<span class="c1">## This first step is just to authenticate user and receive a token (which may or may not expire) to interface with the API</span>
-
-<span class="k">def</span> <span class="nf">token_retrieve</span><span class="p">():</span>
-    <span class="n">authurl</span> <span class="o">=</span> <span class="s1">&#39;https://TOKEN-API-RETRIEVE-URL&#39;</span>
-    <span class="n">authparams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;client_id&#39;</span><span class="p">:</span><span class="s1">&#39;CLIENT-ID&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;response_type&#39;</span><span class="p">:</span><span class="s1">&#39;code&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;scope&#39;</span><span class="p">:</span><span class="s1">&#39;/authenticate&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;redirect_uri&#39;</span><span class="p">:</span><span class="s1">&#39;https://PRE-ESTABLISHED-REDIRECT-URL&#39;</span>
-    <span class="p">}</span>
-    
-    <span class="n">code_token</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">authurl</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">authparams</span><span class="p">)</span>
-    
-    <span class="c1">## In between step above and below some kind of password authentication takes place.</span>
-    
-    <span class="n">tokenurl</span> <span class="o">=</span> <span class="s1">&#39;https://URL-TO-CONFIRM-TOKEN&#39;</span>
-    
-    <span class="n">head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span><span class="s1">&#39;Accept: application/json&#39;</span><span class="p">}</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;client_id&#39;</span><span class="p">:</span><span class="s1">&#39;CLIENT-ID&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;client_secret&#39;</span><span class="p">:</span><span class="s1">&#39;CLIENT-SECRET&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;code&#39;</span><span class="p">:</span><span class="n">continput</span><span class="p">,</span>
-              <span class="s1">&#39;grant_type&#39;</span><span class="p">:</span><span class="s1">&#39;authorization_code&#39;</span><span class="p">,</span>
-              <span class="s1">&#39;redirect_uri&#39;</span><span class="p">:</span><span class="s1">&#39;https://PRE-ESTABLISHED-REDIRECT-URL&#39;</span>
-    <span class="p">}</span>
-
-    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">tokenurl</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span>
-
-<span class="c1">## Now that we are authenticated we can finally get the data.</span>
-
-<span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">acc_token</span><span class="p">):</span>
-    <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;https://DATA-API-URL&#39;</span>
-    <span class="n">head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/vnd.orcid+json&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span><span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">acc_token</span>
-    <span class="p">}</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s1">&#39;API-PARAMETERS&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">head</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each of these little mini-apps needs to be configured to work with a given API, and this hasn't even arrived at the question of how best to structure your data responses so that they are easy to work with.</p>
+<h3 id="Simple-Authentication-Example-Using-NYC-State-Data-Socrata">Simple Authentication Example Using NYC State Data Socrata<a class="anchor-link" href="#Simple-Authentication-Example-Using-NYC-State-Data-Socrata">&#182;</a></h3><p>It is very helpful if an API comes with a pre-built library to interface with that server so that you don't have to handle signing requests in HTTP, managing tokens, etc.</p>
 <p>Fortunately, we have a nice workable pre-made library for working with this same NY State Socrata API portal. The module is called <a href="https://github.com/xmunoz/sodapy/blob/master/examples/basic_queries.py"><pre>sodapy</pre></a></p>
 <p>We'll need to install it:</p>
 <pre>pip install sodapy</pre><p>or</p>
-<pre>easy_install sodaypy</pre><p>or</p>
-<pre>conda install sodapy</pre>
+<pre>easy_install sodapy</pre>
 </div>
 </div>
 </div>
@@ -12352,9 +12282,13 @@ hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Web API Access with Prebuilt Library</strong></p>
-<p>Helpfully, this sodapy has a nice means of working specifically with the NY State Socrata platform. Once you have sodapy installed, you'll need to click on the large "Sign up for an app token!" button here: <a href="https://dev.socrata.com/foundry/data.ny.gov/cm56-widp">https://dev.socrata.com/foundry/data.ny.gov/cm56-widp</a>. Or you can select create a new application and begin registering your API retriever via your State Gov dashboard.</p>
-<p>One you have created an App, copy and paste the App token somewhere for the next step.</p>
+<p><strong>Setting Up Your App on Your Socrata Account</strong></p>
+<p>Once you have sodapy installed, you'll want to visit the API section of the website, which has its own record of the same dataset we visited above with some additional access information:</p>
+<p><a href="https://dev.socrata.com/foundry/data.ny.gov/xe9x-a24f">https://dev.socrata.com/foundry/data.ny.gov/xe9x-a24f</a></p>
+<p>If you scroll down about halfway through this page, you'll see a large "Sign up for an app token!" button. Click on that to be taken to your API dashboard (alternative, you can login and navigae to <a href="https://data.ny.gov/profile/edit/developer_settings">https://data.ny.gov/profile/edit/developer_settings</a>)</p>
+<p>In the second main section, select "Create New App Token."</p>
+<p>Fill in some basic details for your "app" and once generated, copy down the App Token given to you.</p>
+<p>We can now proceed to try out the sodapy library.</p>
 
 </div>
 </div>
@@ -12371,7 +12305,7 @@ hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s
                 <span class="n">username</span><span class="o">=</span><span class="s1">&#39;EMAIL-USERNAME&#39;</span><span class="p">,</span>
                 <span class="n">password</span><span class="o">=</span><span class="s1">&#39;PASSWORD&#39;</span><span class="p">)</span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cm56-widp&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">200000</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xe9x-a24f&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12381,7 +12315,7 @@ hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
@@ -12673,6 +12607,194 @@ hurdat2-nepac-1949- 100%[===================&gt;]   3.24M  5.26MB/s    in 0.6s
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Paging">Paging<a class="anchor-link" href="#Paging">&#182;</a></h3><p>In our example above, using sodapy, notice that we can set the number of results we obtain for each request. This is helpful, even if we want the full set of data. At 1.6 million records, this dataset is taxing (though not extraordinarly so) on our http connection to grab it in one go.</p>
+<p>A common approach used by data providers to solving this problem is paging. In this setup, you are limited in the number of results you can obtain in each request (often set at 200 records) and must make multiple requests and compile the results.</p>
+<p>Take, for example, the city of New York's <a href="311 calls data">https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9</a>. At over 22.4 million records, it isn't realistic to pull the entire dataset in one go. You must page results by passing a "limit" and "offset" paramters in your request URL. Think of this as the total number of records (limit) and a way to request subsequent subsets of results (first page, second page, third page; or offset 0, 1, 2...). An example is available here: <a href="https://dev.socrata.com/docs/paging.html">https://dev.socrata.com/docs/paging.html</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="3.-Complex-Web-API-Requests">3. Complex Web API Requests<a class="anchor-link" href="#3.-Complex-Web-API-Requests">&#182;</a></h1><p>In other cases our data providers will want you to perform a a two or three-legged authorization -- in other words, you register an access token that you use to sign a request for a second token which you can then pass in the actual data request, PLUS some kind of password authorization that is passed via a web form.</p>
+<p>To illustrate how this works on a nice localized environment, we'll practice this using our own Google Drive accounts and Google Sheets (which also happen to be a nice way to read/write out data).</p>
+<p>We'll more or less follow Google's own tutorial pitched to Python approaches available here: <a href="https://developers.google.com/sheets/api/quickstart/python">https://developers.google.com/sheets/api/quickstart/python</a></p>
+<p>A prerequesite is yet another helpful wrapper, this one for working with Google's APIs:</p>
+<pre>pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib</pre>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.-Enable-the-GSheets-API-on-your-account">1. Enable the GSheets API on your account<a class="anchor-link" href="#1.-Enable-the-GSheets-API-on-your-account">&#182;</a></h3><p>Login on your browser and click on the "Enable the Google Sheets API" button in the tutorial linked above. Select Download Client Configuration and save the credentials.json file to the same directory as this notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.--Create-a-Sample-Sheet-in-Google-Drive">2.  Create a Sample Sheet in Google Drive<a class="anchor-link" href="#2.--Create-a-Sample-Sheet-in-Google-Drive">&#182;</a></h3><p>You can name the sheet or not, but it would be helpful to have some dummy data on the sheet to access. For example, consider copying and pasting some of the preview data from the MV data above: <a href="https://data.ny.gov/Transportation/Motor-Vehicle-Crashes-Vehicle-Information-Three-Ye/xe9x-a24f">https://data.ny.gov/Transportation/Motor-Vehicle-Crashes-Vehicle-Information-Three-Ye/xe9x-a24f</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.-Authenticate/login">3. Authenticate/login<a class="anchor-link" href="#3.-Authenticate/login">&#182;</a></h3><p>Run the script below. The firs time you run it, it will ask you to authorize the app, generating a pickle file that you will keep for subsequent access to your Drive.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="k">import</span> <span class="n">build</span>
+<span class="kn">from</span> <span class="nn">google_auth_oauthlib.flow</span> <span class="k">import</span> <span class="n">InstalledAppFlow</span>
+<span class="kn">from</span> <span class="nn">google.auth.transport.requests</span> <span class="k">import</span> <span class="n">Request</span>
+
+<span class="c1"># If modifying these scopes, delete the file token.pickle.</span>
+<span class="n">SCOPES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://www.googleapis.com/auth/spreadsheets.readonly&#39;</span><span class="p">]</span>
+
+<span class="c1"># The ID and range of a sample spreadsheet.</span>
+<span class="n">SAMPLE_SPREADSHEET_ID</span> <span class="o">=</span> <span class="s1">&#39;1ogevD81e4MwrohxZ0PuavRMCcZ-XxuvtIUXt_ZLfMGY&#39;</span>
+<span class="n">SAMPLE_RANGE_NAME</span> <span class="o">=</span> <span class="s1">&#39;Class Data!A1:AO&#39;</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Shows basic usage of the Sheets API.</span>
+<span class="sd">    Prints values from a sample spreadsheet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">creds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># The file token.pickle stores the user&#39;s access and refresh tokens, and is</span>
+    <span class="c1"># created automatically when the authorization flow completes for the first</span>
+    <span class="c1"># time.</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;token.pickle&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;token.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">creds</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="c1"># If there are no (valid) credentials available, let the user log in.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">creds</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">creds</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">creds</span> <span class="ow">and</span> <span class="n">creds</span><span class="o">.</span><span class="n">expired</span> <span class="ow">and</span> <span class="n">creds</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">:</span>
+            <span class="n">creds</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">Request</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flow</span> <span class="o">=</span> <span class="n">InstalledAppFlow</span><span class="o">.</span><span class="n">from_client_secrets_file</span><span class="p">(</span>
+                <span class="s1">&#39;credentials.json&#39;</span><span class="p">,</span> <span class="n">SCOPES</span><span class="p">)</span>
+            <span class="n">creds</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run_local_server</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Save the credentials for the next run</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;token.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">creds</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+
+    <span class="n">service</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s1">&#39;sheets&#39;</span><span class="p">,</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">creds</span><span class="p">)</span>
+
+    <span class="c1"># Call the Sheets API</span>
+    <span class="n">sheet</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spreadsheetId</span><span class="o">=</span><span class="n">SAMPLE_SPREADSHEET_ID</span><span class="p">,</span>
+                                <span class="nb">range</span><span class="o">=</span><span class="n">SAMPLE_RANGE_NAME</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No data found.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Name, Major:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="c1"># Print columns A and E, which correspond to indices 0 and 4.</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+
+<span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Please visit this URL to authorize this application: https://accounts.google.com/o/oauth2/auth?response_type=code&amp;client_id=998508387911-bsvgbvi6eh7eksqnc27se2m9lra6cn7l.apps.googleusercontent.com&amp;redirect_uri=http%3A%2F%2Flocalhost%3A55959%2F&amp;scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fspreadsheets.readonly&amp;state=0PFrDUKHRXKMa5a1OKAcTQyHJHue62&amp;access_type=offline&amp;code_challenge=_xLbURMLa_flXAkCCCYpn-tTfqF7cMP_0e8s3HTmBx0&amp;code_challenge_method=S256
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-8-536b2b263009&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     51</span>             print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;%s, %s&#39;</span> <span class="ansi-blue-fg">%</span> <span class="ansi-blue-fg">(</span>row<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> row<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">4</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     52</span> 
+<span class="ansi-green-fg">---&gt; 53</span><span class="ansi-red-fg"> </span>main<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">&lt;ipython-input-8-536b2b263009&gt;</span> in <span class="ansi-cyan-fg">main</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     30</span>             flow = InstalledAppFlow.from_client_secrets_file(
+<span class="ansi-green-intense-fg ansi-bold">     31</span>                 &#39;credentials.json&#39;, SCOPES)
+<span class="ansi-green-fg">---&gt; 32</span><span class="ansi-red-fg">             </span>creds <span class="ansi-blue-fg">=</span> flow<span class="ansi-blue-fg">.</span>run_local_server<span class="ansi-blue-fg">(</span>port<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     33</span>         <span class="ansi-red-fg"># Save the credentials for the next run</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>         <span class="ansi-green-fg">with</span> open<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;token.pickle&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;wb&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> token<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/google_auth_oauthlib/flow.py</span> in <span class="ansi-cyan-fg">run_local_server</span><span class="ansi-blue-fg">(self, host, port, authorization_prompt_message, success_message, open_browser, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    434</span>         print<span class="ansi-blue-fg">(</span>authorization_prompt_message<span class="ansi-blue-fg">.</span>format<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">=</span>auth_url<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    435</span> 
+<span class="ansi-green-fg">--&gt; 436</span><span class="ansi-red-fg">         </span>local_server<span class="ansi-blue-fg">.</span>handle_request<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    437</span> 
+<span class="ansi-green-intense-fg ansi-bold">    438</span>         <span class="ansi-red-fg"># Note: using https here because oauthlib is very picky that</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/socketserver.py</span> in <span class="ansi-cyan-fg">handle_request</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    293</span> 
+<span class="ansi-green-intense-fg ansi-bold">    294</span>             <span class="ansi-green-fg">while</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 295</span><span class="ansi-red-fg">                 </span>ready <span class="ansi-blue-fg">=</span> selector<span class="ansi-blue-fg">.</span>select<span class="ansi-blue-fg">(</span>timeout<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    296</span>                 <span class="ansi-green-fg">if</span> ready<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    297</span>                     <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_handle_request_noblock<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/selectors.py</span> in <span class="ansi-cyan-fg">select</span><span class="ansi-blue-fg">(self, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">    374</span>             ready <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    375</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 376</span><span class="ansi-red-fg">                 </span>fd_event_list <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_poll<span class="ansi-blue-fg">.</span>poll<span class="ansi-blue-fg">(</span>timeout<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    377</span>             <span class="ansi-green-fg">except</span> InterruptedError<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    378</span>                 <span class="ansi-green-fg">return</span> ready
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>: </pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-Integrity-Checks">Data Integrity Checks<a class="anchor-link" href="#Data-Integrity-Checks">&#182;</a></h2><p>What common checks should we perform?</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -13578,58 +13700,17 @@ Length: 337, dtype: int64</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">water_df</span><span class="p">[[</span><span class="s1">&#39;NYC Consumption(Million gallons per day)&#39;</span><span class="p">,</span><span class="s1">&#39;Per Capita(Gallons per person per day)&#39;</span><span class="p">]]</span> <span class="o">=</span> \
     <span class="n">water_df</span><span class="p">[[</span><span class="s1">&#39;NYC Consumption(Million gallons per day)&#39;</span><span class="p">,</span><span class="s1">&#39;Per Capita(Gallons per person per day)&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
     
-<span class="c1">#ax = water_df.plot(x=&#39;Year&#39;, y=&#39;Per Capita(Gallons per person per day)&#39;, </span>
-              <span class="c1">#figsize=(10,10), title=&#39;Declining Water Use Over Time&#39;)</span>
-<span class="c1">#ax.set_xlabel(&#39;Year&#39;)</span>
-<span class="c1">#ax.set_ylabel(&#39;Per Capita Consumption in Gallons&#39;)</span>
-<span class="c1">#plt.show()</span>
-
 <span class="n">water_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Per Capita(Gallons per person per day)&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Declining Water Use Over Time&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[27]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x11c54ee10&gt;</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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/4nw+/2qXUstUkoEg0FNrn3JJZdgzZo1Cf+loieGLCIi6tW5556LAwcOAABefvllzJs3DzNmzMDNN98c+YFut9vx4x//GPPnz8fHH3980uv/8z//E7/97W+RmZkJAMjKysLy5csBAD/96U8xd+5cTJkyBd/5znci4WvhwoW44447sGDBAkyZMgWbN28GAKxevRq33XYb/v3vf2PNmjW4++67MWPGDBw8eBDPPfcc5s6di+nTp+Oqq66K/KD84IMPMGvWLBgMyj1eP/vZz/C73/0O2dnZAACTyYT77rsvsr5bbrkFc+bMweTJk6OqajzxxBOYMmUKpkyZgieffBIAcOTIEZxxxhlYsWIFJk+ejCVLlkRC3FNPPYVJkyZh2rRp+PrXv37K9VavXo1ly5bhoosuQllZGX7yk59EPhfP97+v72VHRwe++c1vYu7cuZg5cybefvvtyPtfffXVuOyyy7BkyRIcP34c5513XqSyuWHDBgDAq6++iqlTp2LKlCm49957I+9nt9vxox/9CNOnT8eZZ56J2traU77Ghx56CDfccAMWL16MCRMm4Lnnnot87vHHH8fcuXMxbdq0yPc//P387ne/i1mzZqGqquqk6/3zn/9EeXk5zjnnHPzlL3+JPL5582YsWLAAM2fOxIIFC1BRUQFA+W96x44dkeedffbZ2LlzJ4QQWLhwIf7617/28judACll0v+ZPXu2JCIa7vbs2ZPsJUibzSallNLn88mvfOUr8re//a3cs2ePvPTSS6XX65VSSnnLLbfI3//+91JKKQHI11577ZTrtLa2yuzs7D7fp7GxMfLx9ddfL9esWSOllPL888+X3/72t6WUUn700Udy8uTJUkopV61aJW+99VYppZTLly+Xr7/+euT1DQ0NkY9/9KMfyaeeekpKKeWPf/zjyMcDraf7mvx+vzz//PPlZ599FlnTli1bpJRSjhkzRtbX18utW7fKKVOmyPb2dtnW1iYnTZokt23bJg8fPiz1er3cvn27lFLKq6++Wr700ktSSilHjRolPR6PlFLK5ubmU95/1apVsrCwUDY0NEiXyyUnT54st2zZEtf3v7/v5f333x9ZU3Nzs5wwYYJsb2+Xq1atkkVFRZHvw8qVK+UjjzwS+Z60trbKmpoaWVJSIuvq6qTP55OLFi2Sb775ZmQt4d/Hu+++Wz788MOnrOnBBx+U06ZNky6XS9bX18vi4mJZU1Mj33nnHblixQoZDAZlIBCQl1xyifzoo4/k4cOHpRBCfvzxx6dcy+12y+LiYvnFF1/IYDAor776annJJZdIKaVsaWmRPp9PSinl2rVr5ZVXXimllHL16tXy9ttvl1JKWVFRIbvnj5dfflnedtttp7xPb/9fAtgqo8g3HOFARJSCfvK/n2PPsVZVrzlpdCYevGxyv89xu92YMWMGAOVv/d/61rfw7LPP4tNPP8XcuXMjzykoKACg9HBdddVVp1xHStlv0/C6devw2GOPweVyoampCZMnT8Zll10GALjmmmsAAOeddx5aW1vhdDr7XfPu3bvxH//xH3A6nWhvb8fSpUsBAMePH8cZZ5zR63reeecd3HvvvXA6nXjllVewYMEC/OlPf8Kzzz4Lv9+P48ePY8+ePZg2bVqv77lx40ZcccUVsNlsAIArr7wSGzZswFe+8hWUlpZGvoezZ8/GkSNHAADTpk3Dddddh8svvxyXX355r9e98MILMWLEiMg1N27cCIPBEPP3P6y37+W7776LNWvWYOXKlQCUu1orKysj75+bmwsAmDt3Lr75zW/C5/Ph8ssvx4wZM/DBBx9g4cKFyM9Xzka+7rrrsH79elx++eUwmUyRnqjZs2dj7dq1va5p2bJlsFgssFgsWLRoETZv3oyNGzfi3XffxcyZMwEA7e3t2L9/P0477TSMGTMGZ5555inX2bdvH0pLSzFhwgQAwPXXX49nn30WANDS0oLly5dj//79EEJE+u6uvvpqPPzww3j88cfxwgsv4MYbb4xcr6CgAMeOHevzexkPhiwiIooI92R1J6XE8uXL8fOf//yU52dkZECv15/yeGZmJmw2Gw4dOoRx48ad9DmPx4Pvfve72Lp1K0pKSvDQQw+ddJt8z3A20B1eN954I9566y1Mnz4dq1evxocffhj5WsLXDa/n8OHDKC0txdKlS7F06VJceuml8Hq9OHz4MFauXIktW7YgJycHN954Y7+37st+esvMZnPkY71eH9ku/Nvf/ob169djzZo1ePjhh/H5559HtjL7+9rj+f4PdL0///nPKCsrO+lzn3zySSQ0AkowW79+Pf72t7/hhhtuwN133x3ZWu2N0WiMvJ9er++zr6uvNd1///24+eabT/rckSNHTlrTQNcKe+CBB7Bo0SK8+eabOHLkCBYuXAgAsFqtuPDCC/H222/jT3/6U+SGBkD579JisfT5XvFgyCIiSkEDVZwG0wUXXIBly5bhzjvvREFBAZqamtDW1oYxY8b0+7r7778ft956K1577TVkZmaitbUVf/zjH/G1r30NAJCXl4f29na88cYb+OpXvxp53WuvvYZFixZh48aNyMrKQlZW1knXdTgcaGtri/y6ra0No0aNgs/nwx/+8AcUFRUBAM4444xIT1l4Pbfccgv++Mc/Ijs7G1LKSJBqbW2FzWZDVlYWamtr8Y9//CPyg7k35513Hm688Ubcd999kFLizTffxEsvvdTn84PBIKqqqrBo0SKcc845eOWVV9De3h7pDwtbu3YtmpqaYLFY8NZbb+GFF16A1WqN6/vf1/dy6dKl+PWvf41f//rXEEJg+/btkQpSd0ePHkVRURFWrFiBjo4ObNu2Dffeey9uv/12NDQ0ICcnB6+++iq+973vDbiO7t5++23cf//96OjowIcffohHH30UFosFDzzwAK677jrY7XbU1NQMOGW9vLwchw8fxsGDB3H66afj1VdfjXyupaUl8t/B6tWrT3rdt7/9bVx22WU499xzI1U7APjiiy8wZcqUmL6WgTBkERFRvyZNmoRHHnkES5YsQTAYhNFoxNNPPz3gD/lbbrkF7e3tmDt3LoxGI4xGI374wx8iOzsbK1aswNSpUzF27NjINlhYTk4OFixYgNbWVrzwwgunXPfrX/86VqxYgaeeegpvvPEGHn74YcyfPx9jxozB1KlTIwHs4osvxg033HDSelwuF+bPnw+z2Qy73Y6zzz4bM2fORFZWFmbOnInJkydj3LhxOPvss/v92mbNmoUbb7wR8+bNA6D84J45c2Zka7CnQCCA66+/Hi0tLZBS4s477zwlYAHAOeecgxtuuAEHDhzAtddeizlz5gBAXN//vr6XDzzwAO644w5MmzYNUkqMHTu214bvDz/8EI8//jiMRiPsdjtefPFFjBo1Cj//+c+xaNEiSCnx5S9/GcuWLRtwHd3NmzcPl1xyCSorK/HAAw9g9OjRGD16NPbu3YuzzjoLgNJE//LLL/dbpcvIyMCzzz6LSy65BHl5eTjnnHOwe/duAMA999yD5cuX44knnsDixYtPet3s2bORmZmJm2666aTH161b12u1MBGiv5LnYJkzZ47sXrIjIhqO9u7dG+kh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
-"
->
-</div>
-
-</div>
-
 </div>
 </div>
 
