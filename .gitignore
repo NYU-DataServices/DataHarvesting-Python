@@ -3,3 +3,5 @@
 .DS_Store
 /.ipynb*
 .icon
+credentials.json
+*.pickle
