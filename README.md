@@ -12,10 +12,10 @@ This session is an intermediate-to-advanced level class that offers some ideas f
 
  - Obtain data and load it into a suitable data "container" for analysis, often via a web interface, especially an API
  - Parse the data retrieved via an API and turn it into a useful object for manipulation and analysis
- - Perform some basic summary counts of records in a dataset and work up a quick visualization
+ - Perform some basic data integrity checks to ensure data found "in the wild" on the web is ready for analysis
 
 ## Setup
 
 **Project Environment**
 
-Download the notebook available at goo.gl/DZuPim and open it in Jupyter Notebook.
+Download the notebook available at [https://goo.gl/Pnm7Dx](https://goo.gl/Pnm7Dx) and open it in Jupyter Notebook.
